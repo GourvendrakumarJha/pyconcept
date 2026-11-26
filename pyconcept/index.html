@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interactive Venn diagram simulator using Python set operations and a logic gates lab using Python boolean logic.">
+<meta name="theme-color" content="#07061a">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>Sets &amp; Gates Arcade</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css"></head>
+<body>
+<canvas id="bg"></canvas>
+<header>
+<a class="logo" href="#home">Sets &amp; Gates Arcade</a>
+<nav><a href="#venn" id="n-venn">Venn simulator</a><a href="#logic" id="n-logic">Logic gates lab</a>
+<button class="b" id="snd" aria-label="Toggle sound">Sound on</button><button class="b" id="thm" aria-label="Cycle theme mode">Theme</button><button class="b" id="cfg" aria-label="Open customize panel">Customize</button></nav>
+</header>
+<main>
+<section class="view" id="v-home">
+<div class="hero"><h1>Think in sets.<br>Think in bits.</h1>
+<p>Two playgrounds built on real Python semantics. Drag elements through a Venn diagram with <code>|</code> <code>&amp;</code> <code>-</code> <code>^</code>, or wire up gates with <code>and</code> <code>or</code> <code>not</code>. Turn the sound up.</p></div>
+<div class="cards">
+<a class="card" href="#venn"><svg viewBox="0 0 300 170"><circle class="fl" cx="105" cy="85" r="62" fill="color-mix(in srgb,var(--c1) 20%,transparent)" stroke="var(--c1)" stroke-width="4"/><circle class="fl2" cx="190" cy="85" r="62" fill="color-mix(in srgb,var(--c2) 20%,transparent)" stroke="var(--c2)" stroke-width="4"/><text x="150" y="92" text-anchor="middle" font-size="22" font-weight="800" fill="var(--fg)">A &amp; B</text></svg>
+<h2>Venn simulator</h2><p>Python <code>set</code> operations: union, intersection, difference, symmetric difference, complements, subset checks. Click elements to move them between regions.</p><span class="go">Open simulator</span></a>
+<a class="card two" href="#logic"><svg viewBox="0 0 300 170"><path class="dash" d="M10 60H100M10 110H100M200 85H290" fill="none" stroke="var(--c2)" stroke-width="5" stroke-linecap="round"/><path d="M100 45H140A40 40 0 0 1 140 125H100Z" fill="color-mix(in srgb,var(--c2) 20%,transparent)" stroke="var(--c2)" stroke-width="4"/><text x="132" y="90" text-anchor="middle" font-size="15" font-weight="800" fill="var(--fg)">AND</text><circle cx="190" cy="85" r="9" fill="var(--c3)"/></svg>
+<h2>Logic gates lab</h2><p>Flip inputs, chain two gates, read the Python expression, and test your own <code>and</code> / <code>or</code> / <code>not</code> one-liners.</p><span class="go">Open lab</span></a>
+</div></section>
+
+<section class="view" id="v-venn" hidden>
+<h2 class="t">Venn simulator</h2><p class="sub">Click any element to cycle it through A only, both, B only, and neither. Pick an operation to light up the result.</p>
+<div class="grid"><div>
+<div class="pan"><svg id="vs" viewBox="0 0 600 350" role="img" aria-label="Venn diagram of sets A and B" style="width:100%;height:auto;display:block"></svg></div>
+<div class="pan"><h3>Edit the sets</h3>
+<div class="row"><label for="ia" id="lbA">A</label><input type="text" id="ia" autocomplete="off"></div>
+<div class="row"><label for="ib" id="lbB">B</label><input type="text" id="ib" autocomplete="off"></div>
+<div class="btns"><button class="b" id="rnd">Randomize</button><button class="b" id="rst">Reset</button><select class="b" id="pset" aria-label="Preset sets"></select></div></div></div>
+<div><div class="pan"><h3>Operations</h3><div class="ops" id="ops"></div></div>
+<div class="pan"><h3>Python</h3><pre class="con" id="con"></pre></div></div></div>
+</section>
+
+<section class="view" id="v-logic" hidden>
+<h2 class="t">Logic gates lab</h2><p class="sub">Click the inputs to toggle True and False. Choose a gate for each stage and watch the signal flow.</p>
+<div class="grid"><div>
+<div class="pan"><svg id="ls" viewBox="0 0 720 240" role="img" aria-label="Two-stage logic circuit" style="width:100%;height:auto;display:block">
+<path id="wA" class="wire" d="M66 60H220"/><path id="wB" class="wire" d="M66 115H150V90H220"/><path id="wC" class="wire" d="M66 190H430V150H470"/>
+<path id="wM" class="wire" d="M290 75H400V120H470"/><path id="wO" class="wire" d="M540 135H628"/>
+<g id="G1" class="gate" transform="translate(220,45)"></g><g id="G2" class="gate" transform="translate(470,105)"></g>
+<text class="small" x="250" y="30">stage 1</text><text class="small" x="500" y="92">stage 2</text>
+<g class="sw" data-k="A" transform="translate(50,60)" tabindex="0"><circle r="16"/><text dy=".35em">A</text></g>
+<g class="sw" data-k="B" transform="translate(50,115)" tabindex="0"><circle r="16"/><text dy=".35em">B</text></g>
+<g class="sw" data-k="C" transform="translate(50,190)" tabindex="0"><circle r="16"/><text dy=".35em">C</text></g>
+<circle id="led" cx="654" cy="135" r="24"/><text id="ot" x="654" y="180" text-anchor="middle" style="font:800 14px var(--mono);fill:var(--fg)"></text>
+</svg></div>
+<div class="pan"><h3>Truth table (click a row)</h3><table id="tt"></table></div></div>
+<div><div class="pan"><h3>Stage 1 gate</h3><div class="ops" id="g1s"></div><h3 style="margin-top:14px">Stage 2 gate</h3><div class="ops" id="g2s"></div></div>
+<div class="pan"><h3>Python</h3><pre class="con" id="lcon"></pre></div>
+<div class="pan"><h3>Try your own expression</h3><div class="row"><input type="text" id="py" value="A and not B" autocomplete="off" aria-label="Python expression"></div><pre class="con" id="pyo"></pre>
+<p class="sub" style="margin:10px 0 0">Uses A, B, C, True, False, None, numbers and strings. Python’s <code>and</code>/<code>or</code> return an operand: try <code>0 or 5</code>.</p></div></div></div>
+</section>
+</main>
+<aside class="drawer" id="dw" aria-label="Customize settings">
+<div class="row" style="justify-content:space-between"><h2 style="margin:0;font:800 20px var(--disp)">Customize</h2><button class="b" id="cx">Close</button></div>
+<h3>Look</h3>
+<div class="set"><label>Color preset (best in dark mode)</label><div class="ops" id="pre"></div></div>
+<div class="set"><label>Custom colors: first set, second set, result glow</label><div class="row"><input type="color" id="k1"><input type="color" id="k2"><input type="color" id="k3"></div></div>
+<div class="set"><label for="mode">Light or dark</label><select id="mode"><option value="auto">Match my device</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+<div class="set"><label for="fnt">Heading font</label><select id="fnt"><option value="orb">Orbitron</option><option value="sans">System sans</option><option value="serif">Serif</option><option value="mono">Monospace</option></select></div>
+<h3>Motion</h3>
+<div class="set"><label for="spd">Animation speed: <span id="vspd"></span></label><input type="range" id="spd" min="0.3" max="3" step="0.1"></div>
+<div class="set"><label for="den">Background symbols: <span id="vden"></span></label><input type="range" id="den" min="0" max="120" step="2"></div>
+<div class="set"><label><input type="checkbox" id="fxo"> Turn off all animation</label></div>
+<h3>Sound</h3>
+<div class="set"><label for="vol">Volume</label><input type="range" id="vol" min="0" max="1" step="0.05"></div>
+<div class="set"><label for="wav">Waveform</label><select id="wav"><option value="auto">Varied per effect</option><option>sine</option><option>triangle</option><option>square</option><option>sawtooth</option></select></div>
+<h3>Venn simulator</h3>
+<div class="set"><label for="uni">Universe size: <span id="vun"></span></label><input type="range" id="uni" min="4" max="24"></div>
+<div class="set"><label>Set names (Python variable names)</label><div class="row"><input type="text" id="nA" maxlength="6"><input type="text" id="nB" maxlength="6"></div></div>
+<h3>Logic gates lab</h3>
+<div class="set"><label for="tbl">Truth table symbols</label><select id="tbl"><option value="10">1 / 0</option><option value="TF">T / F</option></select></div>
+<div class="btns"><button class="b" id="cr">Reset all settings</button></div></aside>
+<script src="assets/app.js" defer></script>
+</body></html>
